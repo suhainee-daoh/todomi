@@ -1,0 +1,940 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Todomi | Good Plan, Better Days</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:#315c4b;
+  --green2:#48745d;
+  --cream:#faf6ee;
+  --light:#e8efe1;
+  --text:#293e34;
+  --muted:#77867b;
+  --border:#e4e9df;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  font-family:Prompt,sans-serif;
+  background:var(--cream);
+  color:var(--text);
+}
+button,input,select,textarea { font:inherit; }
+button { cursor:pointer; }
+button:disabled { opacity:.6;cursor:wait; }
+.hidden { display:none!important; }
+input,select,textarea {
+  width:100%;
+  border:1px solid #dce4d9;
+  background:white;
+  border-radius:11px;
+  padding:11px 12px;
+  outline:none;
+}
+input:focus,select:focus,textarea:focus {
+  border-color:#7da48b;
+}
+.primary {
+  background:var(--green);
+  color:white;
+  border:0;
+  border-radius:11px;
+  padding:12px 18px;
+}
+.primary:hover { background:var(--green2); }
+.secondary {
+  background:white;
+  border:1px solid var(--border);
+  color:var(--text);
+  border-radius:11px;
+  padding:11px 16px;
+}
+.auth {
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+}
+.auth-art {
+  background:linear-gradient(140deg,#dce9d4,#f9eddb);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:30px;
+}
+.auth-art .plant { font-size:100px; }
+.auth-art h1 {
+  color:var(--green);
+  font-size:36px;
+  line-height:1.4;
+}
+.auth-right {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:22px;
+}
+.auth-card {
+  background:white;
+  width:100%;
+  max-width:390px;
+  padding:35px;
+  border-radius:23px;
+  box-shadow:0 15px 45px #315c4b12;
+}
+.logo {
+  font-size:25px;
+  font-weight:700;
+  color:var(--green);
+}
+.sub { font-size:13px;color:var(--muted); }
+.auth-card h2 { margin-bottom:5px; }
+.auth-card input { margin:7px 0; }
+.auth-card .primary { width:100%;margin-top:12px; }
+.link {
+  background:none;
+  border:0;
+  color:var(--green);
+  padding:12px 0;
+}
+.message {
+  min-height:20px;
+  font-size:12px;
+  color:#b34d42;
+}
+.app { display:flex;min-height:100vh; }
+.sidebar {
+  width:225px;
+  flex-shrink:0;
+  background:#f0f3e8;
+  padding:26px 16px;
+  border-right:1px solid var(--border);
+  display:flex;
+  flex-direction:column;
+}
+.sidebar .logo { margin-bottom:35px; }
+.nav {
+  width:100%;
+  text-align:left;
+  background:none;
+  border:0;
+  padding:13px;
+  border-radius:11px;
+  color:var(--text);
+  margin-bottom:5px;
+}
+.nav.active { background:#c4d9c0; }
+.quote {
+  margin-top:auto;
+  background:#e0ead7;
+  padding:20px;
+  border-radius:17px;
+  font-size:12px;
+  line-height:2;
+}
+.main {
+  flex:1;
+  min-width:0;
+  padding:0 28px 30px;
+}
+.top {
+  height:70px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  gap:15px;
+}
+.top span {
+  font-size:12px;
+  color:var(--muted);
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.hero {
+  margin-top:25px;
+  border-radius:22px;
+  padding:28px;
+  background:linear-gradient(110deg,#e4efdc,#faf0dc);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.hero h1 { font-size:27px;margin:0; }
+.hero p { color:#64776a;font-size:14px; }
+.hero .plant { font-size:60px; }
+.stats {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+  margin:20px 0;
+}
+.stat {
+  background:white;
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:17px;
+}
+.stat span { font-size:22px; }
+.stat strong {
+  display:block;
+  font-size:27px;
+  margin:5px 0;
+}
+.stat small { color:var(--muted); }
+.panel {
+  background:white;
+  border:1px solid var(--border);
+  border-radius:19px;
+  padding:20px;
+}
+.toolbar {
+  display:flex;
+  gap:10px;
+  margin-bottom:17px;
+}
+.toolbar input { flex:1; }
+.toolbar select { width:185px; }
+.filters {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:15px;
+}
+.filter {
+  background:#f2f5ef;
+  border:0;
+  border-radius:25px;
+  padding:9px 15px;
+  font-size:12px;
+}
+.filter.active {
+  background:var(--green);
+  color:white;
+}
+.task {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border-top:1px solid var(--border);
+  padding:17px 4px;
+}
+.task-info { flex:1;min-width:0; }
+.task-title {
+  font-weight:600;
+  overflow-wrap:anywhere;
+}
+.task-title.done {
+  text-decoration:line-through;
+  color:#929e94;
+}
+.task-desc {
+  font-size:12px;
+  color:#69786d;
+  margin-top:4px;
+  overflow-wrap:anywhere;
+}
+.task-meta {
+  font-size:11px;
+  color:var(--muted);
+  margin-top:5px;
+}
+.tag {
+  display:inline-block;
+  font-size:11px;
+  border-radius:8px;
+  padding:5px 9px;
+  background:#e8f1e5;
+}
+.high { background:#ffe3de;color:#a84839; }
+.medium { background:#fff0d6;color:#9e6a18; }
+.low { background:#e4effc;color:#4073a1; }
+.status-select { width:132px;font-size:12px;padding:8px; }
+.icon-btn {
+  border:0;
+  background:#f2f5ef;
+  border-radius:9px;
+  padding:9px;
+}
+.empty {
+  padding:50px 10px;
+  text-align:center;
+  color:var(--muted);
+}
+.modal {
+  position:fixed;
+  inset:0;
+  z-index:10;
+  background:#172c2380;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:15px;
+}
+.modal-card {
+  width:100%;
+  max-width:520px;
+  background:white;
+  border-radius:21px;
+  padding:25px;
+  max-height:92vh;
+  overflow:auto;
+}
+.modal-head {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.modal-head h2 { margin:0; }
+label {
+  display:block;
+  margin:12px 0 6px;
+  font-size:13px;
+}
+textarea { min-height:85px;resize:vertical; }
+.grid2 {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.actions {
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:20px;
+}
+.toast {
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:var(--green);
+  color:white;
+  padding:13px 18px;
+  border-radius:12px;
+  z-index:20;
+  max-width:90vw;
+}
+@media(max-width:850px) {
+  .auth { grid-template-columns:1fr; }
+  .auth-art { display:none; }
+  .sidebar { display:none; }
+  .main { padding:0 13px 25px; }
+  .hero { padding:20px; }
+  .hero h1 { font-size:22px; }
+  .hero .plant { font-size:38px; }
+  .stats { grid-template-columns:repeat(2,1fr); }
+  .panel { padding:13px; }
+  .toolbar { flex-direction:column; }
+  .toolbar select { width:100%; }
+  .task { flex-wrap:wrap; }
+  .status-select { width:120px; }
+  .top { height:64px; }
+}
+</style>
+</head>
+<body>
+
+<section id="authPage" class="auth">
+  <div class="auth-art">
+    <div>
+      <div class="plant">🌿</div>
+      <h1>Good Plan<br>Better Days</h1>
+      <p>เริ่มต้นวันดี ๆ ด้วยการจัดการงานของคุณ</p>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-card">
+      <div class="logo">🌱 Todomi</div>
+      <p class="sub">My Daily To Do List</p>
+      <h2 id="authHeading">ยินดีต้อนรับ</h2>
+      <p class="sub">จัดการงานของคุณให้ง่ายขึ้น</p>
+      <form id="authForm">
+        <input id="email" type="email" placeholder="อีเมล" required>
+        <input id="password" type="password" placeholder="รหัสผ่าน" minlength="6" required>
+        <button id="authButton" class="primary" type="submit">เข้าสู่ระบบ</button>
+      </form>
+      <p id="authMessage" class="message"></p>
+      <button id="switchAuth" class="link" type="button">ยังไม่มีบัญชี? สมัครสมาชิก</button>
+    </div>
+  </div>
+</section>
+
+<div id="appPage" class="app hidden">
+  <aside class="sidebar">
+    <div class="logo">🌱 Todomi</div>
+    <button class="nav active">🏠 งานของฉัน</button>
+    <button class="nav" id="sideAdd">＋ เพิ่มงานใหม่</button>
+    <div class="quote">🌿 งานเล็ก ๆ ในวันนี้<br>คือความสำเร็จในวันพรุ่งนี้ ♡</div>
+  </aside>
+
+  <main class="main">
+    <header class="top">
+      <span id="userEmail"></span>
+      <button id="logoutBtn" class="secondary">ออกจากระบบ</button>
+    </header>
+
+    <section class="hero">
+      <div>
+        <h1>สวัสดี 🌱</h1>
+        <p>วันนี้มีอะไรที่อยากทำให้สำเร็จบ้าง?</p>
+        <button id="addTask" class="primary">＋ เพิ่มงานใหม่</button>
+      </div>
+      <div class="plant">🪴</div>
+    </section>
+
+    <section class="stats">
+      <div class="stat"><span>📋</span><strong id="total">0</strong><small>งานทั้งหมด</small></div>
+      <div class="stat"><span>🕒</span><strong id="pending">0</strong><small>ยังไม่เริ่ม</small></div>
+      <div class="stat"><span>🔵</span><strong id="progress">0</strong><small>กำลังทำ</small></div>
+      <div class="stat"><span>✅</span><strong id="done">0</strong><small>เสร็จแล้ว</small></div>
+    </section>
+
+    <section class="panel">
+      <div class="toolbar">
+        <input id="search" placeholder="🔍 ค้นหางาน...">
+        <select id="sort">
+          <option value="new">งานล่าสุด</option>
+          <option value="due">วันที่ครบกำหนด</option>
+        </select>
+      </div>
+      <div class="filters">
+        <button class="filter active" data-filter="ทั้งหมด">ทั้งหมด</button>
+        <button class="filter" data-filter="ยังไม่เริ่ม">ยังไม่เริ่ม</button>
+        <button class="filter" data-filter="กำลังทำ">กำลังทำ</button>
+        <button class="filter" data-filter="เสร็จแล้ว">เสร็จแล้ว</button>
+      </div>
+      <div id="taskList"><div class="empty">กำลังโหลดงาน...</div></div>
+    </section>
+  </main>
+</div>
+
+<div id="modal" class="modal hidden">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2 id="modalHeading">🌱 เพิ่มงานใหม่</h2>
+      <button id="closeModal" class="icon-btn" type="button">✕</button>
+    </div>
+    <form id="taskForm">
+      <label>ชื่องาน *</label>
+      <input id="title" required maxlength="150" placeholder="กรอกชื่องาน">
+      <label>รายละเอียดเพิ่มเติม</label>
+      <textarea id="description" placeholder="รายละเอียดงาน"></textarea>
+      <div class="grid2">
+        <div>
+          <label>หมวดหมู่</label>
+          <select id="category">
+            <option>ทั่วไป</option>
+            <option>การเรียน</option>
+            <option>การบ้าน</option>
+            <option>โปรเจกต์</option>
+            <option>ส่วนตัว</option>
+          </select>
+        </div>
+        <div>
+          <label>ความสำคัญ</label>
+          <select id="priority">
+            <option>ต่ำ</option>
+            <option selected>ปานกลาง</option>
+            <option>สูง</option>
+          </select>
+        </div>
+        <div>
+          <label>สถานะ</label>
+          <select id="status">
+            <option>ยังไม่เริ่ม</option>
+            <option>กำลังทำ</option>
+            <option>เสร็จแล้ว</option>
+          </select>
+        </div>
+        <div>
+          <label>วันที่ครบกำหนด</label>
+          <input id="dueDate" type="date">
+        </div>
+      </div>
+      <div class="actions">
+        <button id="cancelModal" class="secondary" type="button">ยกเลิก</button>
+        <button id="saveBtn" class="primary" type="submit">บันทึกงาน</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+// ============================================
+// ใส่ข้อมูล Supabase ของโปรเจกต์ Todomi ที่นี่
+// ============================================
+const SUPABASE_URL = "https://yylhsolnysqwwfajkdkm.supabase.co";
+const SUPABASE_KEY = "sb_publishable_AGBFUrG2zwtxMP77TvORnw_UxAhrZ2q";
+// ============================================
+
+const $ = id => document.getElementById(id);
+
+const configured =
+  SUPABASE_URL.startsWith("https://") &&
+  !SUPABASE_URL.includes("YOUR_") &&
+  !SUPABASE_KEY.includes("YOUR_");
+
+const db = configured
+  ? createClient(SUPABASE_URL, SUPABASE_KEY)
+  : null;
+
+let user = null;
+let tasks = [];
+let currentFilter = "ทั้งหมด";
+let editingId = null;
+let registerMode = false;
+let busy = false;
+
+function notify(message) {
+  $("toast").textContent = message;
+  $("toast").classList.remove("hidden");
+  clearTimeout(notify.timer);
+  notify.timer = setTimeout(() => {
+    $("toast").classList.add("hidden");
+  }, 3500);
+}
+
+function errorText(error) {
+  return error?.message || "เกิดข้อผิดพลาด กรุณาลองใหม่";
+}
+
+function setBusy(value) {
+  busy = value;
+  $("authButton").disabled = value;
+  $("saveBtn").disabled = value;
+}
+
+function setAuthMode(register) {
+  registerMode = register;
+  $("authHeading").textContent =
+    register ? "สร้างบัญชีใหม่" : "ยินดีต้อนรับ";
+  $("authButton").textContent =
+    register ? "สมัครสมาชิก" : "เข้าสู่ระบบ";
+  $("switchAuth").textContent = register
+    ? "มีบัญชีแล้ว? เข้าสู่ระบบ"
+    : "ยังไม่มีบัญชี? สมัครสมาชิก";
+  $("authMessage").textContent = "";
+  $("authMessage").style.color = "#b34d42";
+}
+
+$("switchAuth").onclick = () => {
+  setAuthMode(!registerMode);
+};
+
+$("authForm").onsubmit = async event => {
+  event.preventDefault();
+  if (busy) return;
+
+  if (!db) {
+    $("authMessage").textContent =
+      "กรุณาตั้งค่า Supabase URL และ Publishable Key ก่อน";
+    return;
+  }
+
+  setBusy(true);
+  $("authMessage").textContent = "";
+
+  const email = $("email").value.trim();
+  const password = $("password").value;
+
+  try {
+    if (registerMode) {
+      const { data, error } = await db.auth.signUp({
+        email,
+        password
+      });
+      if (error) throw error;
+
+      if (data.session) {
+        await showApp(data.user);
+      } else {
+        $("authMessage").style.color = "#315c4b";
+        $("authMessage").textContent =
+          "สมัครสำเร็จ กรุณาตรวจสอบอีเมลเพื่อยืนยันบัญชี";
+      }
+    } else {
+      const { data, error } =
+        await db.auth.signInWithPassword({
+          email,
+          password
+        });
+      if (error) throw error;
+      await showApp(data.user);
+    }
+  } catch (error) {
+    $("authMessage").style.color = "#b34d42";
+    $("authMessage").textContent = errorText(error);
+  } finally {
+    setBusy(false);
+  }
+};
+
+async function showApp(account) {
+  if (!account) return;
+  user = account;
+  $("authPage").classList.add("hidden");
+  $("appPage").classList.remove("hidden");
+  $("userEmail").textContent = user.email || "";
+  await loadTasks();
+}
+
+function showAuth() {
+  user = null;
+  tasks = [];
+  $("appPage").classList.add("hidden");
+  $("authPage").classList.remove("hidden");
+  $("modal").classList.add("hidden");
+  $("password").value = "";
+}
+
+$("logoutBtn").onclick = async () => {
+  if (!db) return;
+  const { error } = await db.auth.signOut();
+  if (error) {
+    notify(errorText(error));
+    return;
+  }
+  showAuth();
+};
+
+async function loadTasks() {
+  if (!db || !user) return;
+
+  $("taskList").innerHTML =
+    '<div class="empty">กำลังโหลดงาน...</div>';
+
+  const { data, error } = await db
+    .from("tasks")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    $("taskList").innerHTML =
+      '<div class="empty">โหลดข้อมูลไม่สำเร็จ</div>';
+    notify(errorText(error));
+    return;
+  }
+
+  tasks = data || [];
+  render();
+}
+
+function dateLabel(value) {
+  if (!value) return "ไม่กำหนดวัน";
+
+  const [year, month, day] = value.split("-").map(Number);
+  return new Intl.DateTimeFormat("th-TH", {
+    day: "numeric",
+    month: "short",
+    year: "numeric"
+  }).format(new Date(year, month - 1, day));
+}
+
+function element(tag, className = "", content) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (content !== undefined) node.textContent = content;
+  return node;
+}
+
+function render() {
+  $("total").textContent = tasks.length;
+  $("pending").textContent =
+    tasks.filter(t => t.status === "ยังไม่เริ่ม").length;
+  $("progress").textContent =
+    tasks.filter(t => t.status === "กำลังทำ").length;
+  $("done").textContent =
+    tasks.filter(t => t.status === "เสร็จแล้ว").length;
+
+  const search = $("search").value.trim().toLowerCase();
+
+  let visible = tasks.filter(task =>
+    (currentFilter === "ทั้งหมด" ||
+      task.status === currentFilter) &&
+    (task.title.toLowerCase().includes(search) ||
+      (task.description || "").toLowerCase().includes(search))
+  );
+
+  if ($("sort").value === "due") {
+    visible.sort((a, b) =>
+      (a.due_date || "9999-12-31")
+        .localeCompare(b.due_date || "9999-12-31")
+    );
+  } else {
+    visible.sort((a, b) =>
+      new Date(b.created_at) - new Date(a.created_at)
+    );
+  }
+
+  const list = $("taskList");
+  list.replaceChildren();
+
+  if (!visible.length) {
+    list.append(
+      element("div", "empty", "🌿 ยังไม่มีงานในรายการนี้")
+    );
+    return;
+  }
+
+  for (const task of visible) {
+    const row = element("div", "task");
+    const info = element("div", "task-info");
+
+    info.append(
+      element(
+        "div",
+        "task-title" +
+          (task.status === "เสร็จแล้ว" ? " done" : ""),
+        task.title
+      )
+    );
+
+    if (task.description) {
+      info.append(
+        element("div", "task-desc", task.description)
+      );
+    }
+
+    info.append(
+      element(
+        "div",
+        "task-meta",
+        "📅 " + dateLabel(task.due_date) +
+        " · " + task.category
+      )
+    );
+
+    const priorityClass =
+      task.priority === "สูง" ? "high" :
+      task.priority === "ต่ำ" ? "low" : "medium";
+
+    const priority = element(
+      "span",
+      "tag " + priorityClass,
+      task.priority
+    );
+
+    const statusSelect = element("select", "status-select");
+
+    for (const status of [
+      "ยังไม่เริ่ม",
+      "กำลังทำ",
+      "เสร็จแล้ว"
+    ]) {
+      const option = element("option", "", status);
+      option.value = status;
+      statusSelect.append(option);
+    }
+
+    statusSelect.value = task.status;
+
+    statusSelect.onchange = async () => {
+      const nextStatus = statusSelect.value;
+      statusSelect.disabled = true;
+
+      const { error } = await db
+        .from("tasks")
+        .update({ status: nextStatus })
+        .eq("id", task.id)
+        .eq("user_id", user.id);
+
+      if (error) {
+        statusSelect.value = task.status;
+        notify(errorText(error));
+      } else {
+        task.status = nextStatus;
+        notify("เปลี่ยนสถานะสำเร็จ");
+        render();
+      }
+
+      statusSelect.disabled = false;
+    };
+
+    const editButton = element("button", "icon-btn", "✏️");
+    editButton.title = "แก้ไขงาน";
+    editButton.onclick = () => openModal(task);
+
+    const deleteButton = element("button", "icon-btn", "🗑️");
+    deleteButton.title = "ลบงาน";
+    deleteButton.onclick = () => deleteTask(task);
+
+    row.append(
+      info,
+      priority,
+      statusSelect,
+      editButton,
+      deleteButton
+    );
+
+    list.append(row);
+  }
+}
+
+function openModal(task = null) {
+  editingId = task?.id || null;
+  $("taskForm").reset();
+
+  $("modalHeading").textContent =
+    task ? "🌱 แก้ไขงาน" : "🌱 เพิ่มงานใหม่";
+
+  $("title").value = task?.title || "";
+  $("description").value = task?.description || "";
+  $("category").value = task?.category || "ทั่วไป";
+  $("priority").value = task?.priority || "ปานกลาง";
+  $("status").value = task?.status || "ยังไม่เริ่ม";
+  $("dueDate").value = task?.due_date || "";
+
+  $("modal").classList.remove("hidden");
+  $("title").focus();
+}
+
+function closeModal() {
+  $("modal").classList.add("hidden");
+  editingId = null;
+}
+
+$("addTask").onclick = () => openModal();
+$("sideAdd").onclick = () => openModal();
+$("closeModal").onclick = closeModal;
+$("cancelModal").onclick = closeModal;
+
+$("modal").addEventListener("click", event => {
+  if (event.target === $("modal")) closeModal();
+});
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") closeModal();
+});
+
+$("taskForm").onsubmit = async event => {
+  event.preventDefault();
+  if (busy || !user || !db) return;
+
+  const title = $("title").value.trim();
+
+  if (!title) {
+    notify("กรุณากรอกชื่องาน");
+    return;
+  }
+
+  const payload = {
+    title,
+    description: $("description").value.trim(),
+    category: $("category").value,
+    priority: $("priority").value,
+    status: $("status").value,
+    due_date: $("dueDate").value || null
+  };
+
+  setBusy(true);
+
+  try {
+    let result;
+
+    if (editingId) {
+      result = await db
+        .from("tasks")
+        .update(payload)
+        .eq("id", editingId)
+        .eq("user_id", user.id);
+    } else {
+      result = await db
+        .from("tasks")
+        .insert({
+          ...payload,
+          user_id: user.id
+        });
+    }
+
+    if (result.error) throw result.error;
+
+    notify(editingId ? "แก้ไขงานสำเร็จ" : "เพิ่มงานสำเร็จ");
+    closeModal();
+    await loadTasks();
+
+  } catch (error) {
+    notify(errorText(error));
+  } finally {
+    setBusy(false);
+  }
+};
+
+async function deleteTask(task) {
+  if (!user || !db) return;
+
+  const confirmed = confirm(
+    'ต้องการลบงาน "' + task.title + '" ใช่หรือไม่?'
+  );
+
+  if (!confirmed) return;
+
+  const { error } = await db
+    .from("tasks")
+    .delete()
+    .eq("id", task.id)
+    .eq("user_id", user.id);
+
+  if (error) {
+    notify(errorText(error));
+    return;
+  }
+
+  notify("ลบงานสำเร็จ");
+  await loadTasks();
+}
+
+$("search").addEventListener("input", render);
+$("sort").addEventListener("change", render);
+
+document.querySelectorAll(".filter").forEach(button => {
+  button.addEventListener("click", () => {
+    currentFilter = button.dataset.filter;
+
+    document.querySelectorAll(".filter").forEach(item => {
+      item.classList.remove("active");
+    });
+
+    button.classList.add("active");
+    render();
+  });
+});
+
+async function initialize() {
+  if (!db) {
+    $("authMessage").textContent =
+      "กรุณาใส่ Supabase URL และ Publishable Key ในโค้ดก่อนใช้งาน";
+    return;
+  }
+
+  const { data, error } = await db.auth.getUser();
+
+  if (error && error.name !== "AuthSessionMissingError") {
+    console.warn(error.message);
+  }
+
+  if (data?.user) {
+    await showApp(data.user);
+  } else {
+    showAuth();
+  }
+
+  db.auth.onAuthStateChange((event, session) => {
+    if (event === "SIGNED_OUT") {
+      showAuth();
+    }
+  });
+}
+
+initialize();
+</script>
+</body>
+</html>
